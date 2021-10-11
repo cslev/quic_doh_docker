@@ -15,8 +15,8 @@ There might be an image up @dockerHub, but use it with cautions
 Clone the repository first, then build the image.
 ```
 git clone https://github.com/cslev/quic_doh_docker
-cd doh_docker
-sudo docker build -t cslev/doh_docker:latest -f Dockerfile  .
+cd quic_doh_docker
+sudo docker build -t cslev/quic_doh_docker:latest -f Dockerfile  .
 ```
 In the last command `-t` specifies the tag (default `latest`) used for our image! Feel free to use another tag, but to be sync with a possible future update might be coming from## Requirements
 
