@@ -47,7 +47,14 @@ echo -e "+-------------------------------------------------------------+">> $log
 
 # ------------ INPUT ARGS READ FROM ENV. VARIABLES ------------
 # with env vars it is much simpler to use and parse and no ordering is needed!
-# RESOLVER=$1
+# RESOLVER=$1PATH:/quic_doh_project/
+#for firefox
+export PATH=$PATH:/quic_doh_project/firefox
+
+#exporting SSL related ENV variables for firefox
+export SSLKEYLOGFILE=/quic_doh_project/ssl-key.log
+export SSLDEBUGFILE=/quic_doh_project/ssl-debug.log
+
 RESOLVER=$QUIC_DOH_DOCKER_RESOLVER
 #Getting the doh resolver's ID for the python script
 RESOLVER_ID=$(jq ".${RESOLVER}.id" r_config.json)
@@ -225,7 +232,10 @@ cp -Lr $log_file quic_doh_log.log
 # $RESOLVER is an INT so will be good for accessing the resolver name from the array
 archive_name="quic_docker_data_${RESOLVER}_${META}_${START}-${END}_${d}.tar.gz"
 # tar -czf $archive_name csvfile* doh_log.log ssl-key.log
-tar -czf $archive_name csvfile* quic_doh_log.log ssl-key.log
+tar -czf $archive_name csvfile* quic_doh_log.log
+#let's copy ssl-key.log to the pcap directory - maybe it will be useful later (in DEBUG mode, when pcaps are stored)
+cp $SSLKEYLOGFILE ${WORK_DIR}/pcap
+
 echo -e "\t${green}[DONE]${none}" >> $log_file
 
 echo -ne "${yellow}Removing csv files${none}" >> $log_file
