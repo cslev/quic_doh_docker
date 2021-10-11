@@ -188,9 +188,8 @@ print("End = "+str(stop))
 logs.write("End = "+str(stop)+"\n")
 print("(Adjusted) Batch_Size = "+str(batch_size))
 logs.write("(Adjusted) Batch_Size = "+str(batch_size)+"\n")
-print("DoH:")
-
 if resolver:
+    print("DoH:")
     print("\tResolver:"+str(resolver_name))
     print("\tURI:"+str(uri))
     print("\tBootstrap IP:"+str(bootstrap))
@@ -201,7 +200,15 @@ if resolver:
 else: #resolver disabled
     print("\tNo DoH resolver configured, fallback to default DNS")
     logs.write("\tNo DoH resolver configured, fallback to default DNS\n")
-    
+
+if quic:
+    print("QUIC: ENABLED")
+    logs.write("QUIC: ENABLED\n")
+else:
+    print("QUIC: DISABLED")
+    logs.write("QUIC: DISABLED\n")
+
+
 
 print("List of domains to visit (file):"+str(domain_list))
 logs.write("List of domains to visit (file):"+str(domain_list)+"\n")
@@ -372,8 +379,8 @@ print("End = "+str(stop))
 logs.write("End = "+str(stop)+"\n")
 print("(Adjusted) Batch_Size = "+str(batch_size))
 logs.write("(Adjusted) Batch_Size = "+str(batch_size)+"\n")
-print("DoH:")
 if resolver: 
+    print("DoH:")
     print("\tResolver:"+str(resolver_name))
     print("\tURI:"+str(uri))
     logs.write("DoH:\n")
@@ -382,6 +389,13 @@ if resolver:
 else: #resolver disabled
     print("\tNo DoH resolver configured, fallback to default DNS")
     logs.write("\tNo DoH resolver configured, fallback to default DNS\n")
+
+if quic:
+    print("QUIC: ENABLED")
+    logs.write("QUIC: ENABLED\n")
+else:
+    print("QUIC: DISABLED")
+    logs.write("QUIC: DISABLED\n")
 
 # print("\nNumber of webpages failed to load/resolve the domain for: "+str(error))
 # logs.write("\nNumber of webpages failed to load: "+str(error)+"\n")
