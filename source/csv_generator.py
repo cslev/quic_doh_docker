@@ -93,7 +93,7 @@ for f in files :
     # extra_filter=' -o tcp.desegment_tcp_streams:false '
     # if(TSO_ON):
         # extra_filter=' '
-    csv_command = 'tshark -r ' + file_name +' -Y "(http2)||(dns and tls)||(quic)||(dns)" -o tls.keylog_file:'+ SSLKEY +' -T fields -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e _ws.col.Protocol -e frame.len -e _ws.col.Info -E header=y -E separator="," -E quote=d -E occurrence=f > '+ output_file_name
+    csv_command = 'tshark -r ' + file_name +' -Y "(http2)||(dns and tls)||(tls)||(quic)||(http3)||(dns)" -o tls.keylog_file:'+ SSLKEY +' -T fields -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e _ws.col.Protocol -e frame.len -e _ws.col.Info -E header=y -E separator="," -E quote=d -E occurrence=f > '+ output_file_name
     print("tshark cmd: "+ csv_command)
     logs.write("tshark cmd: "+ csv_command+"\n")
     logs.flush()
