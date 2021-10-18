@@ -6,6 +6,8 @@ services:
     container_name: quic_docker  #rename according to you scenario for easier identification
 
     volumes:
+      #proper timing within the host system
+      - '/etc/localtime:/etc/localtime:ro'
       - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
       - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
