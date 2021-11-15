@@ -27,3 +27,29 @@ services:
       QUIC_DOH_DOCKER_ARCHIVE_PATH: '/quic_doh_project/archives' #where to store the compressed output. Should be the same as defined by the 'volume'
       QUIC_DOH_DOCKER_USE_QUIC: '1' #set it to 1 to enable Quic or 0 to disable
       QUIC_DOH_DOCKER_KEEP_PCAP: '0' #DEBUG ONLY: pcap files can consume all your free space, Set it to 1 to keep pcap and 0 otherwise
+      QUIC_DOH_DOCKER_TSO_ON: '0' #Disabled by default as we don't want the NIC to buffer and concatenate fragmented packets that result in jumbo frames. We want packets not greater than 1500B
+
+    cap_add: #in order to disable offloading if required - does not do any harm if left here as it is
+      - NET_ADMIN
+      - NET_BROADCAST
+      - SYS_RESOURCE
+    #NOTE: host network interface card NEEDS the same settings, i.e., if you disable an offloading technique in the container, you should disable it on the host, too
+#     networks:
+#       priv_lan:
+#         priority: 1000
+#         ipv4_address: 192.168.22.22
+
+# networks:
+#   #internal network specification
+#   internal:
+#     ipam:
+#       config:
+#         - subnet: 172.30.1.0/24
+#   #direct network access
+#   priv_lan:
+#     external:
+#       name: priv_lan
+
+# for the direct network access we need to create priv_lan as a docker network directly bridged to the main network interface card
+# it only works with physical connection....wifi usually does not work
+# docker network create -d macvlan --subnet=192.168.0.0/24 --gateway=192.168.0.1 -o parent=eth0 priv_lan

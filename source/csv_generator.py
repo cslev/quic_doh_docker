@@ -24,14 +24,14 @@ parser.add_argument('-i',
                     '--input',
                     dest="input",
                     help="Specify path to pcap file(s). \n" + 
-                    "Use /path/to/csvfiles/capture.csv to process capture.csv\n" +
-                    "Use /path/to/csvfiles/ to process all .csv files in "+
+                    "Use /path/to/csvfiles/capture.pcap to process capture.pcap\n" +
+                    "Use /path/to/csvfiles/ to process all .pcap files in "+
                     "in the directory.",
                     required=True)
 
-# parser.add_argument('-a', '--assembly-segments', action="store_true", dest="tso_on",
-#                     help="Specify if reassembly IS desired in the csv files (Default: False)")
-# parser.set_defaults(tso_on=False)
+parser.add_argument('-a', '--assembly-segments', action="store_true", dest="tso_on",
+                     help="Specify if reassembly IS desired in the csv files (Default: False)")
+parser.set_defaults(tso_on=False)
 parser.add_argument('-k', '--keep-pcaps', action="store_true", dest="keep_pcaps",
                     help="Specify if pcap files SHOULD BE KEPT (Default: False)")
 parser.set_defaults(keep_pcaps=False)
@@ -41,7 +41,7 @@ parser.set_defaults(keep_pcaps=False)
 args = parser.parse_args()
 log_file = args.logfile
 PATH=args.input
-# TSO_ON=args.tso_on
+TSO_ON=args.tso_on
 KEEP_PCAPS=args.keep_pcaps
 
 # opening the same log file for further logging
@@ -89,11 +89,15 @@ for f in files :
     # logs.write(str(output_file_name)+"\n")
     # logs.flush()
 
+    ## SETTING UP FILTERING IF TSO IS DISABLED
     ## here in tls.keylog_file: speciy location and name of sslkeylogfile
-    # extra_filter=' -o tcp.desegment_tcp_streams:false '  <-- if TSO (TCP Seg. Offload) is disabled intentionally 
-    # if(TSO_ON):
-        # extra_filter=' '
-    csv_command = 'tshark -r ' + file_name +' -Y "(http2)||(dns and tls)||(tls)||(quic)||(http3)||(dns)||(udp)" -o tls.keylog_file:'+ SSLKEY +' -T fields -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e udp.srcport -e udp.dstport -e _ws.col.Protocol -e frame.len -e _ws.col.Info -E header=y -E separator="," -E quote=d -E occurrence=f > '+ output_file_name
+    extra_filter=' -o tcp.desegment_tcp_streams:false ' # <-- if TSO (TCP Seg. Offload) is disabled intentionally 
+    # TSO IS ENABLED, NO NEED TO DO FURTHER FILTERING
+    print("TSO ON? : " + str(TSO_ON))
+    if(TSO_ON):
+        extra_filter=' '
+    
+    csv_command = 'tshark -r ' + file_name +' -Y "(http2)||(dns and tls)||(tls)||(quic)||(http3)||(dns)||(udp)" -o tls.keylog_file:'+ SSLKEY + extra_filter +' -T fields -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e udp.srcport -e udp.dstport -e _ws.col.Protocol -e frame.len -e _ws.col.Info -E header=y -E separator="," -E quote=d -E occurrence=f > '+ output_file_name
     print("tshark cmd: "+ csv_command)
     logs.write("tshark cmd: "+ csv_command+"\n")
     logs.flush()

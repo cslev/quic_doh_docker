@@ -32,8 +32,8 @@ source /root/.bashrc
 WORK_DIR="./"
 # mkdir -p $WORK_DIR
 mkdir -p "${WORK_DIR}/pcap"
-
-log_file="${WORK_DIR}progress.log"
+ 
+log_file="${WORK_DIR}container_main.log" #this log file is used by this script itself
 rm -rf log_file #remove any residual
 
 echo -e "+-------------------------------------------------------------+">> $log_file
@@ -78,6 +78,9 @@ ARCHIVE_PATH=$QUIC_DOH_DOCKER_ARCHIVE_PATH #set here the 'mounted' path in conta
 USE_QUIC=$QUIC_DOH_DOCKER_USE_QUIC
 # WHETHER WE SHOULD KEEP PCAP
 KEEP_PCAP=$QUIC_DOH_DOCKER_KEEP_PCAP
+# WHETHER TSO (TCP SEGMENTATION OFFLOAD) is ENABLED or DISABLED
+TSO_ON=$QUIC_DOH_DOCKER_TSO_ON
+
 
 # ------------------------------------
 
@@ -173,6 +176,21 @@ else
   K=""
 fi
 
+if [ ! -z "$TSO_ON" ]
+then
+  if [ $TSO_ON -eq 1 ]
+  then
+    TSO="-a"
+    tso_on="ENABLED"
+  else
+    TSO=""
+    tso_on="DISABLED"
+  fi
+else
+  TSO=""
+  tso_on="DISABLED"
+fi
+
 #resolver=$(cat r_config.json |jq  '{name: ."${RESOLVER}".name}'|grep name|cut -d ':' -f 2|sed "s/\"//g"|sed "s/ //g")
 #resolver=$(cat r_config.json |jq|grep "\"id\": ${RESOLVER}," -A 3|grep name|cut -d ':' -f 2|sed "s/\"//g"|sed "s/ //g"|sed "s/,//g")
 
@@ -189,18 +207,24 @@ echo -e "META = ${green}$META${none}" >> $log_file
 echo -e "INTF = ${green}$INTF${none}" >> $log_file
 echo -e "WEBPAGE_TIMEOUT = ${green}$WEBPAGE_TIMEOUT${none}" >> $log_file
 echo -e "ARCHIVE PATH = ${green}$ARCHIVE_PATH${none}" >> $log_file
-
+echo -e "KEEP_PCAP = ${green}$KEEP_PCAP${none}" >> $log_file
+echo -e "TSO (TCP SEGMENTATION OFFLOAD) = ${green}$TSO_ON${none}" >> $log_file
 echo -e "+================================================+" >> $log_file
 
-echo -ne "${yellow}Disabling offloading features...${none}" >> $log_file
-ethtool -K $INTF rx off tx off gso off gro off tso off 2>> $log_file
-retval=$(echo $?)
-if [ $retval -eq 0 ]
+if [[ "$tso_on" == "DISABLED" ]]
 then
-  echo -e "\t${green}[DONE]${none}" >> $log_file
-else
-  echo -e "\t${yellow}[FAILED]${none}" >> $log_file
-  echo -e "\t${yellow}Container not in privileged mode? (SKIPPING)${none}" >> $log_file
+  echo -ne "${yellow}Disabling offloading features...${none}" >> $log_file
+  ethtool -K $INTF rx off tx off gso off gro off tso off 2>> $log_file
+  retval=$(echo $?)
+
+  if [ $retval -eq 0 ]
+  then
+    echo -e "\t${green}[DONE]${none}" >> $log_file
+  else
+    echo -e "\t${yellow}[FAILED]${none}" >> $log_file
+    echo -e "\t${yellow}Container not in privileged mode or required capabilities were not added at startup? (SKIPPING)${none}" >> $log_file
+  fi
+
 fi
 
 #get date
@@ -209,7 +233,10 @@ d=$(date +"%Y%m%d_%H%M%S")
 
 
 echo 0 > done
-python3 quic_doh_capture.py $R $S $E $B $D $I $T $Q $K
+echo -e "Current dir: " >> $log_file
+pwd >> $log_file
+
+python3 quic_doh_capture.py $R $S $E $B $D $I $T $Q $K $TSO
 
 
 # echo -e "Copy SSL keylog file to $WORK_DIR/" >> $log_file
@@ -218,21 +245,22 @@ python3 quic_doh_capture.py $R $S $E $B $D $I $T $Q $K
 #they are already here!
 
 
-echo -e "Running pcap file analyser to create csv files..." >> $log_file
+#echo -e "Running pcap file analyser to create csv files..." >> $log_file
 
 
 #run csv_generator after all pcaps are done [THIS CAN CAUSE HUGE SPACE UTILIZATION AS PCAPS ARE ONLY REMOVED AFTERWARDS]
-python3 csv_generator.py -l $log_file -i $WORK_DIR/pcap $K
+# python3 csv_generator.py -l $log_file -i $WORK_DIR/pcap $K
 # sleep(1)
 
 echo -ne "${yellow}Compressing data...${none}" >> $log_file
 cd /quic_doh_project/
 # copy the symlink target to have it in the compressed data as well
-cp -Lr $log_file quic_doh_log.log
+cp -Lr progress.log quic_doh_log.log
 # $RESOLVER is an INT so will be good for accessing the resolver name from the array
 archive_name="quic_docker_data_${RESOLVER}_${META}_${START}-${END}_${d}.tar.gz"
 # tar -czf $archive_name csvfile* doh_log.log ssl-key.log
-tar -czf $archive_name csvfile* quic_doh_log.log
+# quic_doh_log.log is the log of the pcap capture and csv_generation, container_main.log is the log of this script
+tar -czf $archive_name csvfile* quic_doh_log.log container_main.log 
 #let's copy ssl-key.log to the pcap directory - maybe it will be useful later (in DEBUG mode, when pcaps are stored)
 cp $SSLKEYLOGFILE ${WORK_DIR}/pcap
 

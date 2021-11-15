@@ -98,9 +98,9 @@ parser.add_argument('-i', '--interface', nargs=1,
                     default=['eth0'])
 parser.add_argument('-t', '--timeout', action="store", default=16, type=int, dest="timeout",
                     help="Specify the timeout for a webpage to load (Default: 16)")
-# parser.add_argument('-a', '--assembly-segments', action="store_true", dest="tso_on",
-#                     help="Specify if reassembly IS desired in the csv files (Default: False)")
-# parser.set_defaults(tso_on=False)
+parser.add_argument('-a', '--assembly-segments', action="store_true", dest="tso_on",
+                    help="Specify if reassembly IS desired in the csv files (Default: False)")
+parser.set_defaults(tso_on=False)
 parser.add_argument('-k', '--keep-pcaps', action="store_true", dest="keep_pcaps",
                     help="Specify if pcap files SHOULD BE KEPT (Default: False)")
 parser.set_defaults(keep_pcaps=False)
@@ -158,11 +158,16 @@ quic = results.quic
 error=0
 timeout=0
 
-#arguments to be passed to csv_generator.py
-# if(results.tso_on):
-#     TSO_OFF = ' -a '
-# else:
-#     TSO_OFF = ' '
+#arguments to be passed to csv_generator.py - TSO: tcp segmentation offload 
+# (if enabled, which is by default, then we have to set -a for csv_generator to let it know
+# packets might be bigger than 1500-byte due to desegmentation
+if(results.tso_on):
+    TSO_ON = ' -a '
+else:
+    #if TSO is disabled, intentionally with ethtool on the given interface, csv_generator, or more precisely the tshark command
+    # later on has to have additional filtering arguments
+    TSO_ON = ' '
+
 if(results.keep_pcaps):
     KEEP_PCAPS=' -k '
 else:
@@ -207,6 +212,12 @@ if quic:
 else:
     print("QUIC: DISABLED")
     logs.write("QUIC: DISABLED\n")
+
+
+print("\tKEEP PCAPS: " + str(results.keep_pcaps))
+logs.write("\tKEEP PCAPS: " + str(results.keep_pcaps)+"\n")
+print("\tTSO ON: " + str(results.tso_on))
+logs.write("\tTSO_ON: " + str(results.tso_on)+"\n")
 
 
 
@@ -366,8 +377,8 @@ while(s<=stop) :
     print("Running pcap file analyser to create csv files...")
     logs.write("Running pcap file analyser to create csv files...\n")
 
-    # csv_command = "python3 csv_generator.py -l "+log_file + TSO_OFF + KEEP_PCAPS
-    csv_command = "python3 csv_generator.py -l "+ log_file + " -i " + filename + " " + KEEP_PCAPS
+    # csv_command = "python3 csv_generator.py -l "+log_file + TSO_ON + KEEP_PCAPS
+    csv_command = "python3 csv_generator.py -l "+ log_file + " -i " + filename + " " + KEEP_PCAPS + " " + TSO_ON
     os.system(csv_command)
     sleep(1)
 
@@ -396,6 +407,13 @@ if quic:
 else:
     print("QUIC: DISABLED")
     logs.write("QUIC: DISABLED\n")
+
+print("\tKEEP PCAPS: " + str(results.keep_pcaps))
+logs.write("\tKEEP PCAPS: " + str(results.keep_pcaps)+"\n")
+print("\tTSO ON: " + str(results.tso_on))
+logs.write("\tTSO_ON: " + str(results.tso_on)+"\n")
+
+
 
 # print("\nNumber of webpages failed to load/resolve the domain for: "+str(error))
 # logs.write("\nNumber of webpages failed to load: "+str(error)+"\n")
