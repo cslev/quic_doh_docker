@@ -7,6 +7,7 @@ import pandas as pd
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException , WebDriverException
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary # for specifying the path to firefox binary
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from time import sleep,ctime
@@ -247,22 +248,31 @@ binary = FirefoxBinary('./firefox/firefox')
 
 #profile = webdriver.FirefoxProfile('/home/user/.mozilla/firefox/0b5055qu.Doh_profile')
 ## setting the firefox profile to use DoH
-profile = webdriver.FirefoxProfile()
+# profile = webdriver.FirefoxProfile()
 if resolver:
-    profile.set_preference("network.trr.mode", 3)
-    profile.set_preference("network.trr.uri", uri)
-    profile.set_preference("network.trr.bootstrapAddress", bootstrap)
+    # profile.set_preference("network.trr.mode", 3)
+    # profile.set_preference("network.trr.uri", uri)
+    # profile.set_preference("network.trr.bootstrapAddress", bootstrap)
+    options.set_preference("network.trr.mode", 3)
+    options.set_preference("network.trr.uri", uri)
+    options.set_preference("network.trr.bootstrapAddress", bootstrap)
 else:
-    profile.set_preference("network.trr.mode", 0)
+    #profile.set_preference("network.trr.mode", 0)
+    options.set_preference("network.trr.mode", 0)
 
 #Use quic if required
 if quic:
-    profile.set_preference("network.http.http3.enable_0rtt", True)
-    profile.set_preference("network.http.http3.enabled", True)
+    # profile.set_preference("network.http.http3.enable_0rtt", True)
+    # profile.set_preference("network.http.http3.enabled", True)
+    options.set_preference("network.http.http3.enable_0rtt", True)
+    options.set_preference("network.http.http3.enabled", True)
 else: #definitely disable quic if not needed
-    profile.set_preference("network.http.http3.enable_0rtt", False)
-    profile.set_preference("network.http.http3.enabled", False)
+    # profile.set_preference("network.http.http3.enable_0rtt", False)
+    # profile.set_preference("network.http.http3.enabled", False)
+    options.set_preference("network.http.http3.enable_0rtt", False)
+    options.set_preference("network.http.http3.enabled", False)
 
+service = Service("./geckodriver") #maybe set path to geckodriver here
 
 logs.flush()
 
@@ -279,7 +289,8 @@ def open_website(url,count):
 
     ## in the executabel path you need to specify the location of geckodriver location.
     try:
-        driver = webdriver.Firefox(options=options, firefox_profile=profile)
+        # driver = webdriver.Firefox(options=options, firefox_profile=profile)
+        driver = webdriver.Firefox(options=options, service=service)
         driver.set_page_load_timeout(webpage_timeout)
     except WebDriverException as ex:
         print("Error during loading the driver (website skipped): " + str(ex))
