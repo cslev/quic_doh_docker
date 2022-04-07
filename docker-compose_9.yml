@@ -8,9 +8,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_1/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_1/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
@@ -42,9 +42,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_2/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_2/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
@@ -75,9 +75,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_3/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_3/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
@@ -108,9 +108,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_4/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_4/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
@@ -141,9 +141,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_5/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_5/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
@@ -174,9 +174,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_6/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_6/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
@@ -207,9 +207,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_7/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_7/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
@@ -240,9 +240,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_8/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_8/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
@@ -273,9 +273,9 @@ services:
     volumes:
       #proper timing within the host system
       - '/etc/localtime:/etc/localtime:ro'
-      - './container_data/QUIC_DOH/archives:/quic_doh_project/archives:rw'
+      - './container_data/QUIC_DOH_9/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
-      - './container_data/QUIC_DOH/pcap:/quic_doh_project/pcap:rw'
+      - './container_data/QUIC_DOH_9/pcap:/quic_doh_project/pcap:rw'
     dns: 1.1.1.1
     shm_size: '4g'
 
