@@ -18,7 +18,7 @@ NUM=""
 META=""
 
 
-while getopts "h?a:b:" opt
+while getopts "h?n:m:" opt
  do
  	case "$opt" in
  	h|\?)
