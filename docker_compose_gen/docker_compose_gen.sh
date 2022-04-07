@@ -24,10 +24,10 @@ while getopts "h?n:m:" opt
  	h|\?)
  		show_help
  		;;
- 	a)
+ 	n)
  		NUM=$OPTARG
  		;;
- 	b)
+ 	m)
  		META=$OPTARG
  		;;
  
