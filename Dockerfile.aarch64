@@ -68,27 +68,21 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $DEPS && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $PYTHON_DEPS && \
-    # dpkg -i selenium/python3-urllib3_1.24.1.deb && \
-    # dpkg -i selenium/python3-selenium_3.14.1.deb && \
     apt-get autoremove --purge -y && \
-    # wget -q http://ftp.fr.debian.org/debian/pool/main/f/firefox-esr/firefox-esr_91.8.0esr-1_arm64.deb && \
-    # tar -xjf firefox-93.0.tar.bz2 && \
-    # tar -xzf geckodriver-v0.30.0-linux64.tar.gz && \
-    dpkg -i firefox_75.0+build3-0ubuntu1_arm64.deb && \
+    dpkg -i firefox_98.0.1+build2-0ubuntu0.20.04.1_arm64.deb && \
     DEBIAN_FRONTEND=noninteractive apt-get install -f -y && \
-    dpkg -i firefox-geckodriver_75.0+build3-0ubuntu1_arm64.deb && \
+    dpkg -i firefox-geckodriver_98.0.1+build2-0ubuntu0.20.04.1_arm64.deb && \
     DEBIAN_FRONTEND=noninteractive apt-get install -f -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    # rm -rf selenium/ && \
-    rm -rf firefox_75.0+build3-0ubuntu1_arm64.deb && \
+    rm -rf firefox_98.0.1+build2-0ubuntu0.20.04.1_arm64.deb && \
     rm -rf firefox-geckodriver_75.0+build3-0ubuntu1_arm64.deb && \
-    #chmod +x geckodriver && \
+    #quic_doh_capture.py has hardcoded firefox binary path, so we have to do this
+    mkdir -p firefox && \
+    ln -s $(which firefox) ./firefox/firefox && \
+    ln -s $(which geckodriver) ./geckodriver && \
     chmod +x quic_doh_capture.py && \
     chmod +x start_quic_doh_capture.sh && \
-    #cp geckodriver /usr/bin && \
-    #mkdir -p /usr/lib/firefox && \
-    #ln -s /doh_project/firefox/firefox /usr/lib/firefox/firefox && \
     mv others/bashrc_template /root/.bashrc && \
     source /root/.bashrc && \
     mkdir -p pcap && \
@@ -100,6 +94,6 @@ RUN apt-get update && \
 #otherwise tcpdump complains about not being able to set ownerships to the output file
 
 # We start the script automatically
-#ENTRYPOINT ["/quic_doh_project/start_quic_doh_capture.sh"]
+ENTRYPOINT ["/quic_doh_project/start_quic_doh_capture.sh"]
 #CMD ["bash", "start_doh_capture.sh"]
 #ENTRYPOINT ["bash"]
