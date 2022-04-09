@@ -83,12 +83,12 @@ RUN apt-get update && \
     # rm -rf selenium/ && \
     rm -rf firefox_75.0+build3-0ubuntu1_arm64.deb && \
     rm -rf firefox-geckodriver_75.0+build3-0ubuntu1_arm64.deb && \
-    chmod +x geckodriver && \
+    #chmod +x geckodriver && \
     chmod +x quic_doh_capture.py && \
     chmod +x start_quic_doh_capture.sh && \
-    cp geckodriver /usr/bin && \
-    mkdir -p /usr/lib/firefox && \
-    ln -s /doh_project/firefox/firefox /usr/lib/firefox/firefox && \
+    #cp geckodriver /usr/bin && \
+    #mkdir -p /usr/lib/firefox && \
+    #ln -s /doh_project/firefox/firefox /usr/lib/firefox/firefox && \
     mv others/bashrc_template /root/.bashrc && \
     source /root/.bashrc && \
     mkdir -p pcap && \
