@@ -1,5 +1,5 @@
   quic[[TEMPLATE_NUMBER]]:
-    image: 'cslev/quic_doh_docker:latest'
+    image: 'cslev/quic_doh_docker:[[TEMPLATE_ARCH]]' #latest is amd64/intelx86_64, aarch64 is for ARM 64-bit
     container_name: quic_docker_[[TEMPLATE_NUMBER]]  #rename according to you scenario for easier identification
 
     volumes:
@@ -8,7 +8,10 @@
       - './container_data/QUIC_DOH_[[TEMPLATE_NUMBER]]/archives:/quic_doh_project/archives:rw'
       #for PCAP files - default they are deleted due to storage concerns - set it below to keep them
       - './container_data/QUIC_DOH_[[TEMPLATE_NUMBER]]/pcap:/quic_doh_project/pcap:rw'
-    dns: 1.1.1.1
+      #for any additional domain lists, please add yours into ./source/domain_lists and refer to it via QUIC_DOH_DOCKER_DOMAIN_LIST later
+      - './source/domain_lists:/quic_doh_project/domain_lists:ro'
+
+    dns: 1.1.1.1 #Remove this line if third-party DNS is not allowed
     shm_size: '4g'
 
     environment:
@@ -18,7 +21,7 @@
       QUIC_DOH_DOCKER_END: '1000' #last domain to visit in the domain list
       QUIC_DOH_DOCKER_BATCH: '200' #how many domains to visit within a batch (don't change unless you know what you are doing)
       QUIC_DOH_DOCKER_INTF: 'eth0' #change this if your container would not have eth0 as a default interface
-      QUIC_DOH_DOCKER_DOMAIN_LIST: 'top-1m_tranco2021.csv' #the relative path inside the container pointing to the list of domains to visit (in Alexa list style: id, domain <-one each line)
+      QUIC_DOH_DOCKER_DOMAIN_LIST: '/quic_doh_project/domain_lists/top-1m_tranco2021.csv' #the relative path inside the container pointing to the list of domains to visit (in Alexa list style: id, domain <-one each line)
       QUIC_DOH_DOCKER_META: '[[TEMPLATE_META]]_quic_no_doh_[[TEMPLATE_NUMBER]]' #any meta info to affix your final output files for easier identification
       QUIC_DOH_DOCKER_WEBPAGE_TIMEOUT: '20' #how many seconds we wait for a website to load before throwing timeout error and skip
       QUIC_DOH_DOCKER_ARCHIVE_PATH: '/quic_doh_project/archives' #where to store the compressed output. Should be the same as defined by the 'volume'
