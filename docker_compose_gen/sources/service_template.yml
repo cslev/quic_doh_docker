@@ -16,7 +16,7 @@
 
     environment:
       QUIC_DOH_DOCKER_NAME: 'QUIC_DOH_[[TEMPLATE_NUMBER]]'  #should be same as container_name
-      QUIC_DOH_DOCKER_RESOLVER: ${R1} # resolver to use
+      QUIC_DOH_DOCKER_RESOLVER: ${R1} # resolver to use (defined in .env file)
       QUIC_DOH_DOCKER_START: '1' #first domain to visit in the domain list
       QUIC_DOH_DOCKER_END: '1000' #last domain to visit in the domain list
       QUIC_DOH_DOCKER_BATCH: '200' #how many domains to visit within a batch (don't change unless you know what you are doing)
